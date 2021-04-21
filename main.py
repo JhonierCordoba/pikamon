@@ -56,12 +56,12 @@ from cliente import *
 
 
 # Creación de los pikamons
-pikamon1 = Pikamon("Pikasaur", 100, "Grass")
-pikamon2 = Pikamon("Pikarizard", 100, "Fire")
-pikamon3 = Pikamon("Pikquirle", 100, "Water")
+pikamon1 = Pikamon("Pikasaur", 100, "Hierba")
+pikamon2 = Pikamon("Pikarizard", 100, "Fuego")
+pikamon3 = Pikamon("Pikquirle", 100, "Agua")
 pikamon4 = Pikamon("añañañin", 100, "ñatus")
 pikamon5 = Pikamon("Goku", 7, "Jesuscrist")
-pikamon6 = Pikamon("oni-chan", 69, "hentai")
+pikamon6 = Pikamon("oni-chan", 69, "kai")
 
 # Stats de pikamons
 
@@ -96,12 +96,12 @@ pikamon1.currentHp = 45
 pikamon1.defense = 49
 pikamon1.speed = 45"""
 
-pikamon1.attacks = [Attack("Tackle", "Physical", 35, 100), Attack("Vine wip", "Grass", 45, 90),
-                    Attack("Sweet Scent", "Effect", 200, 60)]
-pikamon2.attacks = [Attack("Scratch", "Physical", 40, 100), Attack("Fire Spin", "Fire", 50, 90),
-                    Attack("Flame Wheel", "Fire", 120, 75)]
-pikamon3.attacks = [Attack("Tackle", "Physical", 40, 100), Attack("Water Gun", "Water", 40, 90),
-                    Attack("Hydro Pump", "Water", 110, 80)]
+pikamon1.attacks = [Attack("Tackle", "Físico", 35, 100), Attack("Vine wip", "Hierba", 45, 90),
+                    Attack("Green cannon", "Hierba", 200, 60)]
+pikamon2.attacks = [Attack("Scratch", "Físico", 40, 100), Attack("Fire Spin", "Fuego", 50, 90),
+                    Attack("Flame Wheel", "Fuego", 120, 75)]
+pikamon3.attacks = [Attack("Tackle", "Físico", 40, 100), Attack("Water Gun", "Agua", 40, 90),
+                    Attack("Hydro Pump", "Agua", 110, 80)]
 pikamon4.attacks = [Attack("scratch", "plant", 100, 93)]
 pikamon5.attacks = [Attack("scratch", "plant", 100, 93)]
 pikamon6.attacks = [Attack("scratch", "plant", 100, 93)]
@@ -124,28 +124,40 @@ print(f"2. {pikamon2.name}, {pikamon2.type}, {pikamon2.currentHp}")
 print(f"3. {pikamon3.name}, {pikamon3.type}, {pikamon3.currentHp}")
 pika1 = pikalist[int(input())-1]
 print("Has seleccionado a ", pika1.name)
-battle = Battle(pika1, pikamon1)
+
+if pika1.speed > pikamon1.speed:
+    battle = Battle(pika1, pikamon1)
+else:
+    battle = Battle(pikamon1, pika1)
+
 #Aquí comienzan los turnos
 def tuTurno(pikamon):
     comando = None
     while not comando:
         # DO ATTACK -> attack 0
-        tpm_comando = input("Qué deberia hacer " + pikamon.name + "?").split(" ")
+        tpm_comando = input(f"Qué deberia hacer {pikamon.name}?| Attack 0 = {pikamon.attacks[0].name}, Attack 1 = {pikamon.attacks[1].name}, Attack 2 = {pikamon.attacks[2].name} \n").split(" ")
         if (len(tpm_comando) == 2):
             try:
-                if tpm_comando[0] == DO_ATTACK and 0 <= int(tpm_comando[1]) < 4:
+                if tpm_comando[0] == DO_ATTACK and 0 <= int(tpm_comando[1]) < 3:
                     comando = Comando({DO_ATTACK: int(tpm_comando[1])})
             except Exception:
                 pass
     return comando
 
 #La batalla epica por la nota
+N = 0
 while not battle.isOver():
-    comando1 = tuTurno(pika1)
-    comando2 = tuTurno(pikamon1)
+    if(N % 2 == 0):
+        comando1 = tuTurno(pika1)
+        turn = Turn()
+        turn.comando1 = comando1
+        if turn.canStart():
+            battle.executeTurn(turn, pika1, pikamon1)
+    else:
+        comando1 = tuTurno(pikamon1)
+        turn = Turn()
+        turn.comando1 = comando1
+        if turn.canStart():
+            battle.executeTurn(turn, pikamon1, pika1)
+    N += 1
 
-    turn = Turn()
-    turn.comando1 = comando1
-    turn.comando2 = comando2
-    if turn.canStart():
-        battle.executeTurn(turn)

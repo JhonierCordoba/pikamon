@@ -31,51 +31,27 @@ class Battle():
         self.actualTurn = 0
 
     # Función que ejecuta un turno
-    def executeTurn(self, turn):
+    def executeTurn(self, turn, pikamon1, pikamon2):
         # recibe comandos
         comando1 = turn.comando1
-        comando2 = turn.comando2
+        self.pikamon1 = pikamon1
+        self.pikamon2 = pikamon2
         attack1 = None
-        attack2 = None
-        # Compara las velocidades y dependiendo del más rapido se ataca primero
-        if self.pikamon1.speed > self.pikamon2.speed:
-            # Busca el ataque ingresado
-            if DO_ATTACK in comando1.action.keys():
-                # se lo asigna a la variable
-                attack1 = self.pikamon1.attacks[comando1.action[DO_ATTACK]]
-                print(self.pikamon1.name, " usó ", attack1.name, " !")
-                # le resta la vida a el pikamon que recibió el ataque
-            self.pikamon2.currentHp -= self.computeDamage(attack1, self.pikamon1, self.pikamon2)
-            # Rdondea la salud
-            self.pikamon2.currentHp = round(self.pikamon2.currentHp)
-            self.status(self.pikamon2)
-            # Se hace lo mismo para el otro pikamon
-            if DO_ATTACK in comando2.action.keys() and  self.pikamon2.currentHp > 0:
-                attack2 = self.pikamon2.attacks[comando2.action[DO_ATTACK]]
-                print(self.pikamon2.name, " usó ", attack2.name, " !")
-            self.pikamon1.currentHp -= self.computeDamage(attack2, self.pikamon2, self.pikamon1)
-            self.pikamon1.currentHp = round(self.pikamon1.currentHp)
-            self.status(self.pikamon1)
-        else:
-            # Hace lo mismo para el caso en el que el otro pikamon sea más rapido
-            if DO_ATTACK in comando2.action.keys():
-                attack2 = self.pikamon2.attacks[comando2.action[DO_ATTACK]]
-                print(self.pikamon2.name, " usó ", attack2.name, " !")
-            self.pikamon1.currentHp -= self.computeDamage(attack2, self.pikamon2, self.pikamon1)
-            self.pikamon1.currentHp = round(self.pikamon1.currentHp)
-            self.status(self.pikamon1)
-            if DO_ATTACK in comando1.action.keys() and self.pikamon1.currentHp > 0:
-                attack1 = self.pikamon1.attacks[comando1.action[DO_ATTACK]]
-                print(self.pikamon1.name, " usó ", attack1.name, " !")
-            self.pikamon2.currentHp -= self.computeDamage(attack1, self.pikamon1, self.pikamon2)
-            self.pikamon2.currentHp = round(self.pikamon2.currentHp)
-            self.status(self.pikamon2)
-            # Cambia el turno
-        self.actualTurn += 1
+        self.attack(comando1)
+
+    def attack(self, comando1):
+        if DO_ATTACK in comando1.action.keys():
+            # se lo asigna a la variable
+            attack1 = self.pikamon1.attacks[comando1.action[DO_ATTACK]]
+        print(self.pikamon1.name, " usó ", attack1.name, " !")
+            # le resta la vida a el pikamon que recibió el ataque
+        self.pikamon2.currentHp -= self.computeDamage(attack1, self.pikamon1, self.pikamon2)
+        self.pikamon2.currentHp = round(self.pikamon2.currentHp)
+        self.status(self.pikamon2)
 
     # Calcula el daño
     def computeDamage(self, attack, pikamon1, pikamon2):
-        if attack.type == "Physical":
+        if attack.type == "Físico":
             powerFactor = ((attack.damage*8) / pikamon2.defense)
             damage_without_modifier = float(powerFactor) / 7 + 1
             finalDamage = damage_without_modifier * 2 + damage_without_modifier
@@ -83,11 +59,11 @@ class Battle():
             powerFactor = ((pikamon1.spattack*5+attack.damage*3) / pikamon2.spadefense)
             damage_without_modifier = float(powerFactor) / 7 + 1
             finalDamage = damage_without_modifier * self.computeDamageModifier(attack, pikamon1, pikamon2) + damage_without_modifier
-        if random.random() >= attack.accuracy/100:
+        """if random.random() >= attack.accuracy/100:
             finalDamage = 0
-            print(pikamon1.name, " falló su ataque")
-        else:
-            print(pikamon1.name, " Hizo ", round(finalDamage), " de daño a ", pikamon2.name)
+            print(pikamon1.name, " falló su ataque")"""
+        #else:
+        print(pikamon1.name, " Hizo ", round(finalDamage), " de daño a ", pikamon2.name)
         return finalDamage
 
     # Calcula los criticos y las ventajas elementales
@@ -97,24 +73,24 @@ class Battle():
         stab = 1.5
         if pikamon1.type == pikamon2.type:
             effectiveness = 1/2
-        elif pikamon1.type == "Fire" and pikamon2.type == "Water":
+        elif pikamon1.type == "Fuego" and pikamon2.type == "Agua":
             effectiveness = 1 / 2
-        elif pikamon1.type == "Water" and pikamon2.type == "Grass":
+        elif pikamon1.type == "Agua" and pikamon2.type == "Hierba":
             effectiveness = 1 / 2
-        elif pikamon1.type == "Fire" and pikamon2.type == "Grass":
+        elif pikamon1.type == "Fuego" and pikamon2.type == "Hierba":
             effectiveness = 2
-        elif pikamon1.type == "Water" and pikamon2.type == "Fire":
+        elif pikamon1.type == "Agua" and pikamon2.type == "Fuego":
             effectiveness = 2
-        elif pikamon1.type == "Grass" and pikamon2.type == "Water":
+        elif pikamon1.type == "Hierba" and pikamon2.type == "Agua":
             effectiveness = 2
-        elif pikamon1.type == "Grass" and pikamon2.type == "Fire":
+        elif pikamon1.type == "Hierba" and pikamon2.type == "Fuego":
             effectiveness = 1/2
 
         # Calcular Critico
         critical = 1
-        if random.random() <= 0.1:
-            print(pikamon1.name, "usó un ataque crítico!!")
-            critical = 1.5
+        """if random.random() <= 0.1:
+            print(pikamon1.name, "hizo un ataque crítico!!")
+            critical = 2.5"""
         return stab * effectiveness * critical
 
     # Se ejecuta cuando se acaba la batalla(Sí uno de los 2 muere)
