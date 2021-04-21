@@ -59,9 +59,7 @@ class cliente:
 
         response = requests.request("GET", url, headers=headers)
         answerjson = response.json()
-        print(answerjson["espera"][0]["wait"])
         wait = answerjson["espera"][0]["wait"]
-        print(wait)
         if wait == "true":
             return True
         else:

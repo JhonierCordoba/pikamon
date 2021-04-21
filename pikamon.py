@@ -107,9 +107,9 @@ class Battle():
     # Define un ganador
     def Winner(self):
         if self.pikamon1.currentHp <= 0 < self.pikamon2.currentHp:
-            print(self.pikamon2.name, " won in ", str(self.actualTurn), "turns!")
+            print(self.pikamon2.name, " won")
         elif self.pikamon2.currentHp <= 0 < self.pikamon1.currentHp:
-            print(self.pikamon1.name, " won in ", str(self.actualTurn), "turns!")
+            print(self.pikamon1.name, " won")
         else:
             print("Double KO!!!")
 

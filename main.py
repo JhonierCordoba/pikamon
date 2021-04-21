@@ -68,6 +68,7 @@ while cliente.wait() == True:
 enemy = cliente.get_enemy_pokemon()
 enemy_pikamon_name = enemy.get_pokemon()
 enemy_pikamon = pikamon1
+print("espera")
 for n in pikalist:
     if n.name == enemy_pikamon_name:
         enemy_pikamon = n
