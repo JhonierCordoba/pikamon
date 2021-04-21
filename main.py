@@ -1,59 +1,8 @@
-"""import json, requests"""
-import pygame
+import json, requests
 from pikamon import *
 from stats import *
 import time
 from cliente import *
-
-# Crea el juego como tal
-"""class Game:
-    def __init__(self, pikamon1, pikamon2):
-        self.buttons = []
-        #self.menu = Menu()
-        #self.gui = GUI()
-        self.bg = None
-        pygame.init()
-        # Crea la ventana del juego
-        self.screen = pygame.display.set_mode((160 * 4, 144 * 4))
-
-        #clock = pygame.time.Clock()
-        #clock.tick(60)
-
-    # Prosesos de la ventana
-    def process(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                game.stopped = True
-            for button in self.buttons:
-                button.handle_event(event, self)
-            self.menu.handle_event(event, self)
-
-            if event.type == pygame.MOUSEBUTTONUP:
-                if event.button == 1:
-                    print(event.pos)
-
-    # Más procesos, siga bajando
-    def loadResources(self):
-        self.loadPokemonImage(self.pikamon1, True)
-        self.loadPokemonImage(self.pikamon2, False)
-        self.gui.loadResources()
-
-    # Más mierda jajajaja
-    def loadPokemonImage(self, pikamon, isPlayer):
-        pokemon_name = pikamon.name.lower()
-        if isPlayer:
-            pokemon_img = pygame.image.load(pokemon_name + "_Back.png")
-            pokemon_img = pygame.transform.scale(pokemon_img, (300, 300))
-            pikamon.renderer = pokemon_img
-        else:
-            pokemon_img = pygame.image.load('Bulbasaur_Front' + pokemon_name + ".png")
-            pokemon_img = pygame.transform.scale(pokemon_img, (200, 200))
-
-            pikamon.renderer = pokemon_img
-        #self.bg = pygame.image.load('res/battle_bg/battle_bg_1.png')
-        #self.bg = pygame.transform.scale(self.bg, (160 * 4, 400))
-"""
-
 
 # Creación de los pikamons
 pikamon1 = Pikamon("Pikasaur", 100, "Grass")
@@ -77,7 +26,7 @@ pikamon2.defense = 44
 pikamon2.speed = 58
 pikamon2.spadefense = 44
 pikamon2.spattack = 58
-#Squirle
+# Squirle
 pikamon3.currentHp = 50
 pikamon3.defense = 30
 pikamon3.speed = 62
@@ -106,26 +55,36 @@ pikamon4.attacks = [Attack("scratch", "plant", 100, 93)]
 pikamon5.attacks = [Attack("scratch", "plant", 100, 93)]
 pikamon6.attacks = [Attack("scratch", "plant", 100, 93)]
 
-# A pelear!
+# inicio online
 
-
-"""ip = input("Ingrese la ip del servidor:")
+ip = input("Ingrese la ip del servidor: ")
 player_name = input("ingrese su nick: ")
-player_pikamon = input("ingrese el nombre del pikamon a usar: ")
 
-getplayers(ip)"""
-"""game = Game(pikamon1, pikamon2)
-game.loadPokemonImage(pikamon1, True)"""
+# A pelear!
 
 print("Escoge un pikamon: ")
 pikalist = [pikamon1, pikamon2, pikamon3]
 print(f"1. {pikamon1.name}, {pikamon1.type}, {pikamon1.currentHp}")
 print(f"2. {pikamon2.name}, {pikamon2.type}, {pikamon2.currentHp}")
 print(f"3. {pikamon3.name}, {pikamon3.type}, {pikamon3.currentHp}")
-pika1 = pikalist[int(input())-1]
+pika1 = pikalist[int(input()) - 1]
 print("Has seleccionado a ", pika1.name)
-battle = Battle(pika1, pikamon1)
-#Aquí comienzan los turnos
+
+cliente = cliente(player_name, pika1.name, ip)
+cliente.cargar_cliente()
+
+while cliente.wait() == True:
+    cliente.wait()
+
+enemy = cliente.get_enemy_pokemon()
+enemy_pikamon = enemy.get_pokemon()
+
+# aqui comienza la pelea
+battle = Battle(pika1, enemy_pikamon)
+
+
+# Aquí comienzan los turnos
+
 def tuTurno(pikamon):
     comando = None
     while not comando:
@@ -139,7 +98,8 @@ def tuTurno(pikamon):
                 pass
     return comando
 
-#La batalla epica por la nota
+
+# La batalla epica por la nota
 while not battle.isOver():
     comando1 = tuTurno(pika1)
     comando2 = tuTurno(pikamon1)

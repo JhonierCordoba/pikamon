@@ -1,9 +1,11 @@
 from stats import *
 import random
-#Clase pikamon
+
+
+# Clase pikamon
 class Pikamon():
 
-    def __init__ (self, name, level, element):
+    def __init__(self, name, level, element):
         self.name = name
         self.level = level
         self.type = element
@@ -15,14 +17,18 @@ class Pikamon():
         self.stats = {}
         self.currentStatus = 0
         self.currentHp = 0
-#Clase ataque
+
+
+# Clase ataque
 class Attack():
-     def __init__(self, name, element, damage, accuracy):
+    def __init__(self, name, element, damage, accuracy):
         self.name = name
         self.type = element
         self.damage = damage
         self.accuracy = accuracy
-#Clase batalla, para la simulación de los turnos
+
+
+# Clase batalla, para la simulación de los turnos
 class Battle():
 
     def __init__(self, pikamon1, pikamon2):
@@ -50,7 +56,7 @@ class Battle():
             self.pikamon2.currentHp = round(self.pikamon2.currentHp)
             self.status(self.pikamon2)
             # Se hace lo mismo para el otro pikamon
-            if DO_ATTACK in comando2.action.keys() and  self.pikamon2.currentHp > 0:
+            if DO_ATTACK in comando2.action.keys() and self.pikamon2.currentHp > 0:
                 attack2 = self.pikamon2.attacks[comando2.action[DO_ATTACK]]
                 print(self.pikamon2.name, " usó ", attack2.name, " !")
             self.pikamon1.currentHp -= self.computeDamage(attack2, self.pikamon2, self.pikamon1)
@@ -76,14 +82,15 @@ class Battle():
     # Calcula el daño
     def computeDamage(self, attack, pikamon1, pikamon2):
         if attack.type == "Physical":
-            powerFactor = ((attack.damage*8) / pikamon2.defense)
+            powerFactor = ((attack.damage * 8) / pikamon2.defense)
             damage_without_modifier = float(powerFactor) / 7 + 1
             finalDamage = damage_without_modifier * 2 + damage_without_modifier
         else:
-            powerFactor = ((pikamon1.spattack*5+attack.damage*3) / pikamon2.spadefense)
+            powerFactor = ((pikamon1.spattack * 5 + attack.damage * 3) / pikamon2.spadefense)
             damage_without_modifier = float(powerFactor) / 7 + 1
-            finalDamage = damage_without_modifier * self.computeDamageModifier(attack, pikamon1, pikamon2) + damage_without_modifier
-        if random.random() >= attack.accuracy/100:
+            finalDamage = damage_without_modifier * self.computeDamageModifier(attack, pikamon1,
+                                                                               pikamon2) + damage_without_modifier
+        if random.random() >= attack.accuracy / 100:
             finalDamage = 0
             print(pikamon1.name, " falló su ataque")
         else:
@@ -96,7 +103,7 @@ class Battle():
         effectiveness = 0
         stab = 1.5
         if pikamon1.type == pikamon2.type:
-            effectiveness = 1/2
+            effectiveness = 1 / 2
         elif pikamon1.type == "Fire" and pikamon2.type == "Water":
             effectiveness = 1 / 2
         elif pikamon1.type == "Water" and pikamon2.type == "Grass":
@@ -108,7 +115,7 @@ class Battle():
         elif pikamon1.type == "Grass" and pikamon2.type == "Water":
             effectiveness = 2
         elif pikamon1.type == "Grass" and pikamon2.type == "Fire":
-            effectiveness = 1/2
+            effectiveness = 1 / 2
 
         # Calcular Critico
         critical = 1
@@ -147,21 +154,21 @@ class Battle():
             attack1 = self.pikamon1.attacks[comando1.action[DO_ATTACK]]
         if DO_ATTACK in comando2.action.keys():
             attack2 = self.pikamon2.attacks[comando1.action[DO_ATTACK]]
+
+
 # Clase comando para lo que se ingresa por consola
 class Comando():
 
-    def __init__ (self, action):
+    def __init__(self, action):
         self.action = action
+
+
 # Clase turno, para turnos obvi
 class Turn():
 
-    def __init__ (self):
+    def __init__(self):
         self.comando1 = None
         self.comando2 = None
 
     def canStart(self):
         return self.comando1 is not None or self.command2 is not None
-
-
-
-
