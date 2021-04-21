@@ -1,3 +1,4 @@
+# Cosas raras e inservible pero necesarias
 ATTACK = "Attack"
 HP = "HP"
 DEFENSE = "Defense"
