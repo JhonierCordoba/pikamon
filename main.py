@@ -77,7 +77,11 @@ while cliente.wait() == True:
     cliente.wait()
 
 enemy = cliente.get_enemy_pokemon()
-enemy_pikamon = enemy.get_pokemon()
+enemy_pikamon_name = enemy.get_pokemon()
+enemy_pikamon = pikamon1
+for n in pikalist:
+    if n.name == enemy_pikamon_name:
+        enemy_pikamon = n
 
 # aqui comienza la pelea
 battle = Battle(pika1, enemy_pikamon)
