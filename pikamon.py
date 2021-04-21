@@ -113,16 +113,6 @@ class Battle():
         else:
             print("Double KO!!!")
 
-    # no sé si borrar esto
-    def ejecutarTurno(self, turn):
-        comando1 = turn.comando1
-        comando2 = turn.comando2
-        attack1 = None
-        attack2 = None
-        if DO_ATTACK in comando1.action.keys():
-            attack1 = self.pikamon1.attacks[comando1.action[DO_ATTACK]]
-        if DO_ATTACK in comando2.action.keys():
-            attack2 = self.pikamon2.attacks[comando1.action[DO_ATTACK]]
 # Clase comando para lo que se ingresa por consola
 class Comando():
 

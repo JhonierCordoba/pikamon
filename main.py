@@ -1,7 +1,7 @@
-import json
 from pikamon import *
 from stats import *
 import time
+import random
 from cliente import *
 
 # Creación de los pikamons
@@ -73,7 +73,7 @@ for n in pikalist:
         enemy_pikamon = n
 
 # aqui comienza la pelea
-if enemy_pikamon.speed > pika1:
+if enemy_pikamon.speed > pika1.speed:
     battle = Battle(enemy_pikamon, pika1)
 else:
     battle = Battle(pika1, enemy_pikamon)
@@ -85,10 +85,24 @@ def tuTurno(pikamon):
     comando = None
     while not comando:
         # DO ATTACK -> attack 0
-        tpm_comando = input(f"Qué deberia hacer {pikamon.name}? | Attack 0 = {pikamon.attacksa[0].name}, Attack 1 = {pikamon.attacksa[1].name}, Attack 2 = {pikamon.attacksa[2].name}").split(" ")
+        tpm_comando = input(f"Qué deberia hacer {pikamon.name}? | Attack 0 = {pikamon.attacks[0].name}, Attack 1 = {pikamon.attacks[1].name}, Attack 2 = {pikamon.attacks[2].name} \n").split(" ")
         if (len(tpm_comando) == 2):
             try:
                 if tpm_comando[0] == DO_ATTACK and 0 <= int(tpm_comando[1]) < 4:
+                    comando = Comando({DO_ATTACK: int(tpm_comando[1])})
+            except Exception:
+                pass
+    return comando
+
+def tuTurnoM(pikamon):
+    comando = None
+    while not comando:
+        # DO ATTACK -> attack 0
+        tpm_comando = ("Attack " + str(random.randint(0, 2))).split(" ")
+        if (len(tpm_comando) == 2):
+            print("Ataque recibído")
+            try:
+                if tpm_comando[0] == DO_ATTACK and 0 <= int(tpm_comando[1]) < 3:
                     comando = Comando({DO_ATTACK: int(tpm_comando[1])})
             except Exception:
                 pass
@@ -101,9 +115,12 @@ while not battle.isOver():
         comando1 = tuTurno(pika1)
         turn = Turn()
         turn.comando1 = comando1
+        if turn.canStart():
+            battle.executeTurn(turn, pika1, pikamon1)
     else:
-        comando1 = tuTurno(pikamon1)
+        comando1 = tuTurnoM(pikamon1)
         turn = Turn()
         turn.comando1 = comando1
-    if turn.canStart():
-        battle.executeTurn(turn)
+        if turn.canStart():
+            battle.executeTurn(turn, pikamon1, pika1)
+    N += 1
