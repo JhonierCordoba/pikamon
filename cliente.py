@@ -3,36 +3,66 @@ import json
 
 
 class cliente:
-
-    def __init__(self, ip, nick, pokemon):
-        self.ip = ip
-        self.nick = nick
+    def __init__(self, name, pokemon, ip):
+        self.nick = name
         self.pokemon = pokemon
+        self.ip = ip
 
-    def get_ip(self):
-        return self.ip
-
-    def get_nick(self):
+    def get_name(self):
         return self.nick
 
     def get_pokemon(self):
         return self.pokemon
 
-    def set_ip(self, new_ip):
-        self.ip = new_ip
+    def cargar_cliente(self):
+        import requests
 
-    def set_nick(self, new_nick):
-        self.nick = new_nick
+        url = "http://" + self.ip + ":5000/players"
 
-    def set_pokemon(self, new_pokemon):
-        self.pokemon = new_pokemon
+        payload = {
+            "name": self.nick,
+            "pokemon": self.pokemon
+        }
+        headers = {"Content-Type": "application/json"}
 
+        response = requests.request("POST", url, json=payload, headers=headers)
 
-def getplayers(ip):
-    url = "http://" + ip + ":5000/players"
+        print(response.text)
 
-    headers = {"Content-Type": "application/json"}
+    def getplayers(self):
+        url = "http://" + self.ip + ":5000/players"
 
-    response = requests.request("GET", url, headers=headers)
-    answerjson = response.json()
-    print(response.text)
+        headers = {"Content-Type": "application/json"}
+
+        response = requests.request("GET", url, headers=headers)
+        answerjson = response.json()
+        print(response.text)
+
+    def get_enemy_pokemon(self):
+        url = "http://" + self.ip + ":5000/players/matches/"+self.nick
+
+        headers = {"Content-Type": "application/json"}
+
+        response = requests.request("GET", url, headers=headers)
+        answerjson = response.json()
+        name = answerjson["pelea"][0]["name"]
+        print(name)
+        pokemon = answerjson["pelea"][0]["pokemon"]
+        print(pokemon)
+        enemy = cliente(name, pokemon, self.ip)
+        return enemy
+
+    def wait(self):
+        url = "http://" + self.ip + ":5000/wait/"+self.nick
+
+        headers = {"Content-Type": "application/json"}
+
+        response = requests.request("GET", url, headers=headers)
+        answerjson = response.json()
+        print(answerjson["espera"][0]["wait"])
+        wait = answerjson["espera"][0]["wait"]
+        print(wait)
+        if wait == "true":
+            return True
+        else:
+            return False
